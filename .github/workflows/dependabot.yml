@@ -12,7 +12,7 @@ jobs:
       contents: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_URL: ${{ github.event.workflow_run.pull_requests[0].html_url }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
     steps:
       - name: Fetch Dependabot Metadata
         uses: dependabot/fetch-metadata@v2
