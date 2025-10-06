@@ -10,6 +10,13 @@ multi-ecosystem-groups:
     commit-message:
       prefix: "Monthly dependency updates: "
 
+  container-updates:
+    schedule:
+      interval: "cron"
+      cronjob: "0 6 3 4 *" #April 3 at 6AM
+      timezone: "America/Detroit"
+    commit-message:
+      prefix: "Annual container update: "
 
 updates:
   # For npm/JavaScript dependencies
