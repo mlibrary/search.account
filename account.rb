@@ -8,7 +8,7 @@ require "ostruct"
 require "active_support"
 require "active_support/core_ext/numeric"
 
-require "byebug" if development?
+require "debug" if development?
 
 require_relative "lib/services"
 

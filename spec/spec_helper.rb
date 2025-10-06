@@ -16,7 +16,7 @@
 
 require "rack/test"
 require "rspec"
-require "pry-byebug"
+require "debug"
 require "webmock/rspec"
 require "simplecov"
 require "climate_control"
