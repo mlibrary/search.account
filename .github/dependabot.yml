@@ -40,11 +40,11 @@ updates:
   # For Docker
   - package-ecosystem: "docker"
     directory: "/"
-    multi-ecosystem-group: "app-dependencies"
+    multi-ecosystem-group: "container-updates"
     patterns: ["*"]
 
   # For Docker Compose
   - package-ecosystem: "docker-compose"
     directory: "/"
-    multi-ecosystem-group: "app-dependencies"
+    multi-ecosystem-group: "container-updates"
     patterns: ["*"]
