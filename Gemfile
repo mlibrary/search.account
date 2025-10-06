@@ -28,8 +28,7 @@ gem "yabeda-prometheus"
 
 group :development, :test do
   gem "standard"
-  gem "pry"
-  gem "pry-byebug"
+  gem "debug"
   gem "rack-test"
   gem "rspec"
   gem "webmock"
