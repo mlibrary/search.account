@@ -25,6 +25,7 @@ jobs:
     steps:
       - name: Fetch Dependabot Metadata
         uses: dependabot/fetch-metadata@v2
+        id: dependabot-metadata
       - name: Approve and Merge the PR
         if: ${{ steps.dependabot-metadata.outputs.dependency-group == 'app-dependencies' }}
         run: |
