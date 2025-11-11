@@ -127,6 +127,11 @@
     "slug": "login"
   },
   {
+    "title": "Library Account Accessibility Statement",
+    "icon_name": "accessible_forward",
+    "sidebar": "false"
+  },
+  {
     "title": "Page not found",
     "sidebar": "false",
     "slug": "none",
