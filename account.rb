@@ -65,6 +65,7 @@ require_relative "lib/routes/pending_requests"
 require_relative "lib/routes/past_activity"
 require_relative "lib/routes/settings"
 require_relative "lib/routes/fines_and_fees"
+require_relative "lib/routes/accessibility"
 
 helpers StyledFlash
 

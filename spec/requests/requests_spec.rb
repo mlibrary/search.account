@@ -37,6 +37,12 @@ describe "requests" do
       expect(last_response.body).to include("Account Overview")
     end
   end
+  context "get /accessibility" do
+    it "contains 'Library Account Accessibility Statement'" do
+      get "/accessibility"
+      expect(last_response.body).to include("Library Account Accessibility Statement")
+    end
+  end
   context "not_found" do
     it "shows page not found for not found" do
       get "/does_not_exist"
