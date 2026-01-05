@@ -10,18 +10,18 @@ on:
 jobs:
   build-unstable:
     name: Build unstable ${{ github.event.inputs.tag }}
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-unstable.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-unstable.yml@4a9818c407159a5506496035650065da9a8afd40
     with:
       image_name: ${{ vars.IMAGE_NAME }}
       tag: ${{ github.event.inputs.tag }}
       dockerfile: Dockerfile
     secrets: inherit
 
-  deploy-unstable:
-    needs: build-unstable
-    name: Deploy to workshop
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
-    with:
-      image: ${{ needs.build-unstable.outputs.image }}
-      file: environments/account/workshop/web-image.txt
-    secrets: inherit
+  #deploy-unstable:
+    #needs: build-unstable
+    #name: Deploy to workshop
+    #uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
+    #with:
+      #image: ${{ needs.build-unstable.outputs.image }}
+      #file: environments/account/workshop/web-image.txt
+    #secrets: inherit
