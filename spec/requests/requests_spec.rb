@@ -38,9 +38,9 @@ describe "requests" do
     end
   end
   context "get /accessibility" do
-    it "contains 'Library Account Accessibility Statement'" do
+    it "contains 'Account Accessibility'" do
       get "/accessibility"
-      expect(last_response.body).to include("Library Account Accessibility Statement")
+      expect(last_response.body).to include("Account Accessibility")
     end
   end
   context "not_found" do
