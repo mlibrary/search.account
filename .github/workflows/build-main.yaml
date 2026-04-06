@@ -9,7 +9,7 @@ on:
 jobs:
   build-unstable:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-unstable.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-unstable.yml@3da26f1832553b70524d212b48ec21b0d206006e # v1.6.6
     with:
       image_name: ${{ vars.IMAGE_NAME }}
       tag: ${{ github.sha }}
@@ -19,7 +19,7 @@ jobs:
   deploy-unstable:
     needs: build-unstable
     name: Deploy to workshop
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@3da26f1832553b70524d212b48ec21b0d206006e # v1.6.6
     with:
       image: ${{ needs.build-unstable.outputs.image }}
       file: environments/account/workshop/web-image.txt
