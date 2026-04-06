@@ -10,7 +10,7 @@ on:
 jobs:
   build-production:
     name: Build production ${{ github.event.inputs.tag }}
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-production.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/build-production.yml@3da26f1832553b70524d212b48ec21b0d206006e # v1.6.6
     with:
       image_name: ${{ vars.IMAGE_NAME }}
       tag: ${{ github.event.inputs.tag }}
@@ -20,7 +20,7 @@ jobs:
   deploy-production:
     needs: build-production
     name: Deploy to production
-    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@v1
+    uses: mlibrary/platform-engineering-workflows/.github/workflows/deploy.yml@3da26f1832553b70524d212b48ec21b0d206006e # v1.6.6
     with:
       image: ghcr.io/mlibrary/${{ vars.IMAGE_NAME }}:${{ github.event.inputs.tag }}
       file: environments/account/production/web-image.txt
