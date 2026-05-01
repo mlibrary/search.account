@@ -95,7 +95,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (7.2.0)
+    puma (8.0.1)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.4)
@@ -155,7 +155,7 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     securerandom (0.4.1)
-    semantic_logger (4.17.0)
+    semantic_logger (4.18.0)
       concurrent-ruby (~> 1.0)
     simplecov (0.22.0)
       docile (~> 1.1)
