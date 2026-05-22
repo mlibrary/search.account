@@ -8,38 +8,6 @@ class Loans < Items
     @pagination = pagination
   end
 
-  # def self.renew_all(uniqname:, client: AlmaRestClient.client, connections: [],
-  # publisher: Publisher.new)
-  # url = "/users/#{uniqname}/loans"
-  # publisher.publish({step: 1, count: 0, renewed: 0, uniqname: uniqname})
-  # response = client.get_all(url: url, record_key: "item_loan", query: {"expand" => "renewable"})
-
-  # return response if response.status != 200
-  # loans = response.body["item_loan"]&.map do |loan|
-  # Loan.new(loan)
-  # end
-  # renew(uniqname: uniqname, loans: loans, publisher: publisher)
-  # end
-
-  # def self.renew(uniqname:, loans:, publisher: Publisher.new)
-  # count = 0
-  # renewed = 0
-  # renew_statuses = []
-  # loans.filter { |x| x.renewable? }.each do |loan|
-  # response = Loan.renew(uniqname: uniqname, loan_id: loan.loan_id)
-  # if response.code != 200
-  # renew_statuses.push(:fail)
-  # else
-  # renewed += 1
-  # renew_statuses.push(:success)
-  # end
-  # count += 1
-  # publisher.publish({step: 2, count: count, renewed: renewed, uniqname: uniqname})
-  # end
-  # publisher.publish({step: 3, count: count, renewed: renewed, uniqname: uniqname})
-  # RenewResponse.new(renew_statuses: renew_statuses)
-  # end
-
   def count
     @parsed_response["total_record_count"]
   end
