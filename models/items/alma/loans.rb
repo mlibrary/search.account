@@ -1,15 +1,15 @@
 class Loans < Items
   attr_reader :pagination
-  def initialize(parsed_response:, pagination:)
-    @parsed_response = parsed_response
-    @items = parsed_response["item_loan"]&.map do |loan|
+  def initialize(body:, pagination:)
+    @body = body
+    @items = @body["item_loan"]&.map do |loan|
       Loan.new(loan)
     end || []
     @pagination = pagination
   end
 
   def count
-    @parsed_response["total_record_count"]
+    @body["total_record_count"]
   end
 
   def self.for(uniqname:, offset: nil, limit: 15,
@@ -24,13 +24,13 @@ class Loans < Items
 
     response = client.get(url, query: query)
     raise StandardError unless response.status == 200
-    pr = response.body
-    pagination_params = {url: "/current-checkouts/u-m-library", total: pr["total_record_count"]}
+    body = response.body
+    pagination_params = {url: "/current-checkouts/u-m-library", total: body["total_record_count"]}
     pagination_params[:limit] = limit unless limit.nil?
     pagination_params[:current_offset] = offset unless offset.nil?
     pagination_params[:order_by] = order_by unless order_by.nil?
     pagination_params[:direction] = direction unless direction.nil?
-    Loans.new(parsed_response: pr, pagination: PaginationDecorator.new(**pagination_params))
+    Loans.new(body: body, pagination: PaginationDecorator.new(**pagination_params))
   end
 end
 
@@ -40,32 +40,28 @@ class Loan < AlmaItem
   end
 
   def due_date
-    DateTime.patron_format(@parsed_response["due_date"]) unless claims_returned?
-  end
-
-  def renewable?
-    !!@parsed_response["renewable"] # make this a real boolean
+    DateTime.patron_format(@body["due_date"]) unless claims_returned?
   end
 
   def loan_id
-    @parsed_response["loan_id"]
+    @body["loan_id"]
   end
 
   def call_number
-    @parsed_response["call_number"]
+    @body["call_number"]
   end
 
   def barcode
-    @parsed_response["item_barcode"]
+    @body["item_barcode"]
   end
 
   def publication_date
-    @parsed_response["publication_year"]
+    @body["publication_year"]
   end
 
   def due_status
     return OpenStruct.new(to_s: "Reported as returned", tag: "tag--warning", any?: true) if claims_returned?
-    DueStatus.new(due_date: @parsed_response["due_date"], last_renew_date: @parsed_response["last_renew_date"])
+    DueStatus.new(due_date: @body["due_date"], last_renew_date: @body["last_renew_date"])
   end
 
   def due_status_tag
@@ -75,6 +71,6 @@ class Loan < AlmaItem
   private
 
   def claims_returned?
-    @parsed_response["process_status"] == "CLAIMED_RETURN"
+    @body["process_status"] == "CLAIMED_RETURN"
   end
 end
