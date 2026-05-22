@@ -129,18 +129,19 @@ end
   end
 end
 
-[:get, :post, :delete].each do |name|
-  define_method(:"stub_alma_#{name}_request") do |url:, body: "{}", status: 200, query: {}, no_return: nil|
-    req = stub_request(name, "#{ENV["ALMA_API_HOST"]}/almaws/v1/#{url}").with(
-      headers: {
-        :accept => "application/json",
-        :Authorization => "apikey #{ENV["ALMA_API_KEY"]}",
-        "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-        "User-Agent" => "Ruby"
-      },
-      query: query
-    )
-    req.to_return(body: body, status: status, headers: {content_type: "application/json"}) if no_return.nil?
+[:get, :post, :put, :delete].each do |name|
+  define_method(:"stub_alma_#{name}_request") do |url:, input: nil, output: "", status: 200, query: nil, no_return: nil|
+    req_attributes = {}
+    req_attributes[:headers] = {
+      "Authorization" => "apikey #{ENV["ALMA_API_KEY"]}"
+    }
+    req_attributes[:body] = input unless input.nil?
+    req_attributes[:query] = query unless query.nil?
+
+    resp = {headers: {content_type: "application/json"}, status: status, body: output}
+
+    req = stub_request(name, "#{ENV["ALMA_API_HOST"]}/almaws/v1/#{url.sub(/^\//, "")}").with(**req_attributes)
+    req.to_return(**resp) if no_return.nil?
     req
   end
 end
@@ -159,21 +160,6 @@ end
     req.to_return(body: body, status: status, headers: {content_type: "application/json"}) if no_return.nil?
     req
   end
-end
-
-def stub_alma_put_request(url:, input:, output:, status: 200, no_return: nil)
-  req = stub_request(:put, "#{ENV["ALMA_API_HOST"]}/almaws/v1/#{url}").with(
-    body: input,
-    headers: {
-      :accept => "application/json",
-      :Authorization => "apikey #{ENV["ALMA_API_KEY"]}",
-      "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-      "User-Agent" => "Ruby",
-      "Content-Type" => "application/json"
-    }
-  )
-  req.to_return(body: output, status: status, headers: {content_type: "application/json"}) if no_return.nil?
-  req
 end
 
 def old_stub_alma_put_request(url:, input:, output:, status: 200, no_return: nil)

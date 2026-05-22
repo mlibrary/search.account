@@ -32,7 +32,7 @@ describe "requests" do
   end
   context "get /" do
     it "contains 'Account Overview'" do
-      old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full")
+      stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full")
       get "/"
       expect(last_response.body).to include("Account Overview")
     end
