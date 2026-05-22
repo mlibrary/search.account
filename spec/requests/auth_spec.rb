@@ -15,7 +15,7 @@ describe "authentication requests" do
     }
   }
   let(:alma_patron_stub) do
-    old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", status: 400)
+    stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", status: 400)
   end
   let(:illiad_stub) do
     stub_illiad_get_request(url: "Users/tutor", status: 404)
@@ -79,7 +79,7 @@ describe "authentication requests" do
     it "returns 401 response" do
       env "HTTP_X_AUTH_REQUEST_USER", nil
       get "/"
-      old_stub_alma_get_request(url: "users/?expand=none&user_id_type=all_unique&view=full", status: 400)
+      stub_alma_get_request(url: "users/?expand=none&user_id_type=all_unique&view=full", status: 400)
       expect(last_response.status).to eq(401)
     end
   end

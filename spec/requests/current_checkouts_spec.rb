@@ -37,7 +37,7 @@ describe "current-checkouts requests" do
   context "get /current-checkouts/u-m-library" do
     context "in alma user" do
       before(:each) do
-        old_stub_alma_get_request(url: "users/tutor/loans", query: {expand: "renewable", limit: 15, order_by: "due_date"})
+        stub_alma_get_request(url: "users/tutor/loans", query: {expand: "renewable", limit: 15, order_by: "due_date"})
       end
       it "contains 'U-M Library'" do
         get "/current-checkouts/u-m-library"
@@ -46,7 +46,7 @@ describe "current-checkouts requests" do
     end
     context "in alma user but alma has a network problem" do
       it "loads the empty state and has an error flash" do
-        old_stub_alma_get_request(url: "users/tutor/loans", query: {expand: "renewable", limit: 15, order_by: "due_date"}, status: 500)
+        stub_alma_get_request(url: "users/tutor/loans", query: {expand: "renewable", limit: 15, order_by: "due_date"}, status: 500)
         get "/current-checkouts/u-m-library"
         expect(last_response.body).to include("You don't have")
         expect(last_response.body).to include("Error")
@@ -99,24 +99,4 @@ describe "current-checkouts requests" do
       expect(last_response.body).to include("Error")
     end
   end
-  # ToDO
-  # context "post /renew-loan" do
-  # before(:each) do
-  # old_stub_alma_get_request(url: "users/tutor/loans", query: {expand: 'renewable'})
-  # end
-  # it "handles good request" do
-  # old_stub_alma_post_request(url: "users/tutor/loans/1234", query: {op: 'renew'} )
-  # post "/renew-loan", {'loan_id' => '1234'}
-  # expect(URI(last_response.headers["Location"]).path).to eq("/current-checkouts/loans")
-  # follow_redirect!
-  # expect(last_response.body).to include("Loan Successfully Renewed")
-  # end
-  # it "handles bad request" do
-  # old_stub_alma_post_request(url: "users/tutor/loans/1234", query: {op: 'renew'}, status: 500 )
-  # post "/renew-loan", {'loan_id' => '1234'}
-  # expect(URI(last_response.headers["Location"]).path).to eq("/current-checkouts/loans")
-  # follow_redirect!
-  # expect(last_response.body).to include("Error")
-  # end
-  # end
 end

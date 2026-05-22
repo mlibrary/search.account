@@ -18,7 +18,7 @@ describe "requests" do
   end
   context "get /settings" do
     it "contains 'Settings'" do
-      old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full")
+      stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", output: "{}")
       stub_circ_history_get_request(url: "users/tutor")
       stub_illiad_get_request(url: "Users/tutor", status: 404)
       get "/settings"
@@ -28,7 +28,7 @@ describe "requests" do
   context "post /settings/history" do
     before(:each) do
       @patron_json = File.read("./spec/fixtures/mrio_user_alma.json")
-      old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", body: @patron_json)
+      stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", output: @patron_json)
       stub_circ_history_get_request(url: "users/tutor")
       stub_illiad_get_request(url: "Users/tutor", status: 404)
     end
@@ -51,7 +51,7 @@ describe "requests" do
   context "post /sms" do
     before(:each) do
       @patron_json = File.read("./spec/fixtures/mrio_user_alma.json")
-      @stub = old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", body: @patron_json)
+      @stub = stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", output: @patron_json)
       stub_circ_history_get_request(url: "users/tutor")
       stub_illiad_get_request(url: "Users/tutor", status: 404)
     end
@@ -60,7 +60,7 @@ describe "requests" do
       new_phone_patron = JSON.parse(@patron_json)
       new_phone_patron["contact_info"]["phone"][1]["phone_number"] = sms_number
 
-      old_stub_alma_put_request(url: "users/mrio", input: new_phone_patron.to_json, output: new_phone_patron.to_json)
+      stub_alma_put_request(url: "users/mrio", input: new_phone_patron.to_json, output: new_phone_patron.to_json)
 
       post "/sms", {"text-notifications" => "on", "sms-number" => sms_number}
       follow_redirect!
@@ -74,14 +74,14 @@ describe "requests" do
     it "handles phone number removal" do
       new_phone_patron = JSON.parse(@patron_json)
       new_phone_patron["contact_info"]["phone"].delete_at(1)
-      old_stub_alma_put_request(url: "users/mrio", input: new_phone_patron.to_json, output: new_phone_patron.to_json)
+      stub_alma_put_request(url: "users/mrio", input: new_phone_patron.to_json, output: new_phone_patron.to_json)
       post "/sms", {"text-notifications" => "off", "sms-number" => ""}
       follow_redirect!
       expect(last_response.body).to include("successfully removed")
     end
     it "handles a network error" do
       remove_request_stub(@stub)
-      old_stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", no_return: true).to_timeout
+      stub_alma_get_request(url: "users/tutor?expand=none&user_id_type=all_unique&view=full", no_return: true).to_timeout
       post "/sms", {"text-notifications" => "off", "sms-number" => ""}
       session = last_request.env["rack.session"]
       expect(session["flash"][:error]).to include("We were unable")
