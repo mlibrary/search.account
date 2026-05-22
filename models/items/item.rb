@@ -1,7 +1,6 @@
 class Item
-  attr_reader :parsed_response, :description
+  attr_reader :description, :body
   def initialize(body)
-    @parsed_response = body
     @body = body
     @author = @body["author"] || ""
     @title = @body["title"] || ""

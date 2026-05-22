@@ -49,7 +49,7 @@ describe Patron do
       end
       it "rejects invalid phone number" do
         result = subject.update_sms("aaa1234")
-        expect(result.code).to eq(500)
+        expect(result.status).to eq(500)
         expect(result.message).to eq("Phone number aaa1234 is invalid")
       end
       it "submits internal phone number for non_existent number" do

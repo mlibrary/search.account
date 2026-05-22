@@ -8,7 +8,7 @@ class InterlibraryLoanItems < Items
     body = response.parsed_response
     pagination_params = {url: url, total: ill_count.total(body)}.merge(ill_count.pagination_params)
 
-    new(parsed_response: ill_count.page_of_results(body), pagination: PaginationDecorator.new(**pagination_params), count: ill_count.total(body))
+    new(body: ill_count.page_of_results(body), pagination: PaginationDecorator.new(**pagination_params), count: ill_count.total(body))
   end
 
   def self.base_query

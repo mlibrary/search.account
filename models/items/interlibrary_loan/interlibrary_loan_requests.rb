@@ -1,8 +1,8 @@
 class InterlibraryLoanRequests < InterlibraryLoanItems
   attr_reader :pagination, :count
-  def initialize(parsed_response:, pagination:, count: nil)
+  def initialize(pagination:, body:, count: nil)
     super
-    @items = parsed_response.map { |item| InterlibraryLoanRequest.new(item) }
+    @items = body.map { |item| InterlibraryLoanRequest.new(item) }
     @pagination = pagination
     @count = count
   end

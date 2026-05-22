@@ -1,11 +1,9 @@
 class Response
-  attr_reader :status, :code, :message, :parsed_response, :body
-  def initialize(code: 200, message: "Success", parsed_response: {})
-    @code = code
-    @status = code
+  attr_reader :status, :code, :message, :body
+  def initialize(status: 200, message: "Success", body: {})
+    @status = status
     @message = message
-    @parsed_response = parsed_response
-    @body = parsed_response
+    @body = body
   end
 end
 
@@ -21,7 +19,7 @@ end
 # end
 
 class Error < Response
-  def initialize(code: 500, message: "There was an error")
+  def initialize(status: 500, message: "There was an error")
     super
   end
 end
@@ -29,10 +27,7 @@ end
 class AlmaError < Error
   def initialize(response)
     @body = response.body
-    # TBDeleted
-    @parsed_response = response.body
     @status = response.status
-    @code = status
 
     @message = get_messages
   end

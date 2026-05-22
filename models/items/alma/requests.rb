@@ -1,20 +1,20 @@
 class Requests
   attr_reader :holds, :bookings
-  def initialize(parsed_response:)
-    @parsed_response = parsed_response
-    @holds = parsed_response["user_request"]&.select { |r| r["request_type"] == "HOLD" }&.map { |r| HoldRequest.new(r) } || []
-    @bookings = parsed_response["user_request"]&.select { |r| r["request_type"] == "BOOKING" }&.map { |r| BookingRequest.new(r) } || []
+  def initialize(body:)
+    @body = body
+    @holds = @body["user_request"]&.select { |r| r["request_type"] == "HOLD" }&.map { |r| HoldRequest.new(r) } || []
+    @bookings = @body["user_request"]&.select { |r| r["request_type"] == "BOOKING" }&.map { |r| BookingRequest.new(r) } || []
   end
 
   def count
-    @parsed_response["total_record_count"]
+    @body["total_record_count"]
   end
 
   def self.for(uniqname:, client: AlmaRestClient.client)
     url = "/users/#{uniqname}/requests"
     response = client.get_all(url: url, record_key: "user_request")
     raise StandardError unless response.status == 200
-    Requests.new(parsed_response: response.body)
+    Requests.new(body: response.body)
   end
 end
 
@@ -28,27 +28,27 @@ class Request < AlmaItem
   end
 
   def expiry_date
-    @parsed_response["expiry_date"] ? DateTime.patron_format(@parsed_response["expiry_date"]) : ""
+    @body["expiry_date"] ? DateTime.patron_format(@body["expiry_date"]) : ""
   end
 
   def publication_date
-    @parsed_response["date_of_publication"]
+    @body["date_of_publication"]
   end
 
   def request_id
-    @parsed_response["request_id"]
+    @body["request_id"]
   end
 
   def pickup_location
-    @parsed_response["pickup_location"]
+    @body["pickup_location"]
   end
 
   def request_date
-    DateTime.patron_format(@parsed_response["request_time"])
+    DateTime.patron_format(@body["request_time"])
   end
 
   def status
-    request_status = @parsed_response["request_status"] || ""
+    request_status = @body["request_status"] || ""
     normalized_status = request_status.upcase.tr(" ", "_")
     case normalized_status
     when "IN_PROCESS"
@@ -76,7 +76,7 @@ end
 
 class BookingRequest < Request
   def booking_date
-    DateTime.patron_format(@parsed_response["booking_start_date"])
+    DateTime.patron_format(@body["booking_start_date"])
   end
 
   def self.empty_state_text
