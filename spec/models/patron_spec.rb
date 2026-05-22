@@ -10,7 +10,7 @@ describe Patron do
       @patron_url = "users/mrio?user_id_type=all_unique&view=full&expand=none"
     end
     subject do
-      stub_alma_get_request(
+      old_stub_alma_get_request(
         url: @patron_url,
         body: @alma_response.to_json
       )
@@ -29,7 +29,7 @@ describe Patron do
         @updated_patron = patron.to_json
       end
       it "returns status of 200 for sucessful update" do
-        stub_alma_put_request(
+        old_stub_alma_put_request(
           url: "users/mrio",
           input: @updated_patron,
           output: @updated_patron
@@ -37,7 +37,7 @@ describe Patron do
         expect(subject.update_sms(@new_phone).code).to eq(200)
       end
       it "returns alma error for failed update" do
-        stub_alma_put_request(
+        old_stub_alma_put_request(
           url: "users/mrio",
           input: @updated_patron,
           output: File.read("./spec/fixtures/alma_error.json"),
@@ -198,7 +198,7 @@ describe Patron do
       @alma_response = JSON.parse(File.read("./spec/fixtures/mrio_user_alma.json"))
       @circ_history_response = JSON.parse(File.read("./spec/fixtures/circ_history_user.json"))
       @patron_url = "users/mrio?user_id_type=all_unique&view=full&expand=none"
-      stub_alma_get_request(
+      old_stub_alma_get_request(
         url: @patron_url,
         body: @alma_response.to_json
       )
@@ -245,7 +245,7 @@ describe Patron do
     before(:each) do
       @alma_response = File.read("./spec/fixtures/alma_error.json")
       @patron_url = "users/mrioaaa?user_id_type=all_unique&view=full&expand=none"
-      stub_alma_get_request(
+      old_stub_alma_get_request(
         status: 400,
         url: @patron_url,
         body: @alma_response

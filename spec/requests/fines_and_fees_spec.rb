@@ -24,19 +24,19 @@ describe "fines-and-fees requests" do
   context "get /fines-and-fees" do
     context "in alma user" do
       it "contains 'Fines'" do
-        stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0},
+        old_stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0},
           body: File.read("spec/fixtures/jbister_fines.json"))
         get "/fines-and-fees"
         expect(last_response.body).to include("Fines")
       end
       it "shows error and empty state if there's an failed alma request" do
-        stub_alma_get_request(url: "users/tutor/fees", status: 500, query: {limit: 100, offset: 0})
+        old_stub_alma_get_request(url: "users/tutor/fees", status: 500, query: {limit: 100, offset: 0})
         get "/fines-and-fees"
         expect(last_response.body).to include("You don't have")
         expect(last_response.body).to include("Error")
       end
       it "shows error and empty state if there's an timeout" do
-        stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0}, no_return: true).to_timeout
+        old_stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0}, no_return: true).to_timeout
         get "/fines-and-fees"
         expect(last_response.body).to include("You don't have")
         expect(last_response.body).to include("Error")
@@ -52,7 +52,7 @@ describe "fines-and-fees requests" do
   end
   context "post /fines-and-fees/pay" do
     before(:each) do
-      @stub = stub_alma_get_request(url: "users/tutor/fees", body: File.read("./spec/fixtures/jbister_fines.json"), query: {limit: 100, offset: 0})
+      @stub = old_stub_alma_get_request(url: "users/tutor/fees", body: File.read("./spec/fixtures/jbister_fines.json"), query: {limit: 100, offset: 0})
       stub_request(:post, S.slack_url) # Don't care about the slack url for testing purposes
     end
     it "for pay in full redirects to nelnet with total amountDue" do
@@ -72,7 +72,7 @@ describe "fines-and-fees requests" do
     end
     it "redirects back to fines and fees with an error if there's a network error" do
       remove_request_stub(@stub)
-      stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0}, no_return: true).to_timeout
+      old_stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0}, no_return: true).to_timeout
       post "/fines-and-fees/pay", {"pay_in_full" => "false", "partial_amount" => "100"}
       expect(last_response.status).to eq(302)
       expect(URI(last_response.headers["Location"]).path).to eq("/fines-and-fees")
@@ -110,11 +110,11 @@ describe "fines-and-fees requests" do
     end
     it "for valid params, updates Alma, sets success flash, prints receipt" do
       with_modified_env NELNET_SECRET_KEY: "secret" do
-        stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0},
+        old_stub_alma_get_request(url: "users/tutor/fees", query: {limit: 100, offset: 0},
           body: File.read("spec/fixtures/jbister_fines.json"))
         @session[:order_number] = "382481568"
         env "rack.session", @session
-        stub_alma_post_request(url: "users/tutor/fees/all", query: {op: "pay", amount: "22.50", method: "ONLINE", external_transaction_id: "382481568"}, body: File.read("spec/fixtures/fines_pay_amount.json"))
+        old_stub_alma_post_request(url: "users/tutor/fees/all", query: {op: "pay", amount: "22.50", method: "ONLINE", external_transaction_id: "382481568"}, body: File.read("spec/fixtures/fines_pay_amount.json"))
 
         get "/fines-and-fees/receipt", @params
         expect(last_response.body).to include("Fines successfully paid")
@@ -122,7 +122,7 @@ describe "fines-and-fees requests" do
     end
     it "for invalid params,  sets fail flash" do
       with_modified_env NELNET_SECRET_KEY: "incorect_secret" do
-        stub = stub_alma_post_request(url: "users/tutor/fees/all", query: {op: "pay", amount: "22.50", method: "ONLINE", external_transaction_id: "382481568"})
+        stub = old_stub_alma_post_request(url: "users/tutor/fees/all", query: {op: "pay", amount: "22.50", method: "ONLINE", external_transaction_id: "382481568"})
 
         get "/fines-and-fees/receipt", @params
         expect(last_response.body).to include("Your payment could not be validated")
