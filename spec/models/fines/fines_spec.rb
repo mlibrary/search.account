@@ -39,8 +39,8 @@ describe Fines do
 end
 describe Fines, "self.pay" do
   it "posts to Alma with user fine info" do
-    stub_alma_post_request(url: "users/jbister/fees/all", query: {op: "pay", amount: "5.00", method: "ONLINE", external_transaction_id: "12345"}, output: "Success")
-    expect(Fines.pay(uniqname: "jbister", amount: "5.00", order_number: "12345").body).to eq("Success")
+    stub_alma_post_request(url: "users/jbister/fees/all", query: {op: "pay", amount: "5.00", method: "ONLINE", external_transaction_id: "12345"}, output: '{"result":"Success"}')
+    expect(Fines.pay(uniqname: "jbister", amount: "5.00", order_number: "12345").body).to eq({"result" => "Success"})
   end
 end
 
@@ -129,7 +129,7 @@ describe Fine do
 end
 describe Fine, "self.pay" do
   it "posts to Alma with user fine info" do
-    stub_alma_post_request(url: "users/jbister/fees/1234", query: {op: "pay", amount: "1.00", method: "ONLINE"}, output: "Success")
-    expect(Fine.pay(uniqname: "jbister", fine_id: "1234", balance: "1.00").body).to eq("Success")
+    stub_alma_post_request(url: "users/jbister/fees/1234", query: {op: "pay", amount: "1.00", method: "ONLINE"}, output: '{"result":"Success"}')
+    expect(Fine.pay(uniqname: "jbister", fine_id: "1234", balance: "1.00").body).to eq({"result" => "Success"})
   end
 end

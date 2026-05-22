@@ -37,13 +37,13 @@ class Receipt
       ErrorReceipt.new("You do not have a balance. Your payment order number is: #{order_number}.")
     else # has not already paid
       resp = Fines.pay(uniqname: uniqname, amount: payment.amount, order_number: order_number)
-      if resp.code != 200
+      if resp.status != 200
         error = AlmaError.new(resp)
         S.logger.error("fine_payment_error", message: "Failed to apply payment to Alma: #{error.message}", **error_params)
         ErrorReceipt.new("#{error.message}<br>Your payment order number is: #{order_number}")
       else
         S.logger.info("fine_payment_success", message: "Fine payment success", order_number: order_number)
-        Receipt.new(payment: payment, balance: resp.parsed_response["total_sum"])
+        Receipt.new(payment: payment, balance: resp.body["total_sum"])
       end
     end
   end

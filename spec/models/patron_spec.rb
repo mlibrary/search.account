@@ -34,7 +34,7 @@ describe Patron do
           input: @updated_patron,
           output: @updated_patron
         )
-        expect(subject.update_sms(@new_phone).code).to eq(200)
+        expect(subject.update_sms(@new_phone).status).to eq(200)
       end
       it "returns alma error for failed update" do
         stub_alma_put_request(
@@ -44,7 +44,7 @@ describe Patron do
           status: 500
         )
         result = subject.update_sms(@new_phone)
-        expect(result.code).to eq(500)
+        expect(result.status).to eq(500)
         expect(result.message).to eq("User with identifier mrioaaa was not found.")
       end
       it "rejects invalid phone number" do
@@ -54,13 +54,13 @@ describe Patron do
       end
       it "submits internal phone number for non_existent number" do
         @alma_response["contact_info"]["phone"].delete_at(1)
-        response_dbl = double("response", code: 200)
+        response_dbl = double("response", status: 200)
         client_dbl = instance_double(AlmaRestClient::Client, put: response_dbl)
         expect(client_dbl).to receive(:put).with(anything, body: @updated_patron)
         subject.update_sms(@new_phone, client_dbl)
       end
       it "submits removed phone number when sent an empty number" do
-        response_dbl = double("response", code: 200)
+        response_dbl = double("response", status: 200)
         client_dbl = instance_double(AlmaRestClient::Client, put: response_dbl)
 
         expected_sent_data = JSON.parse(@alma_response.to_json)

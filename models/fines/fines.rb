@@ -1,4 +1,11 @@
 class Fines
+  def self.for(uniqname:, client: AlmaRestClient.client)
+    url = "/users/#{uniqname}/fees"
+    response = client.get_all(url: url, record_key: "fee")
+    raise StandardError if response.status != 200
+    Fines.new(parsed_response: response.body)
+  end
+
   def initialize(parsed_response:)
     @parsed_response = parsed_response
     @list = parsed_response["fee"]&.map { |l| Fine.new(l) } || []
@@ -39,27 +46,20 @@ class Fines
   def self.verify_payment(uniqname:, order_number:, client: AlmaRestClient.client)
     url = "/users/#{uniqname}/fees"
     response = client.get_all(url: url, record_key: "fee")
-    if response.code == 200
-      parsed_response = response.parsed_response
-      transactions = parsed_response["fee"].filter_map do |fee|
+    if response.status == 200
+      body = response.body
+      transactions = body["fee"].filter_map do |fee|
         fee["transaction"]
       end.flatten
       has_order_number = transactions.any? { |transaction| transaction["external_transaction_id"] == order_number }
       {
         has_order_number: has_order_number,
-        total_sum: parsed_response["total_sum"]
+        total_sum: body["total_sum"]
       }
     else
       # if this errors out return alma error
       AlmaError.new(response)
     end
-  end
-
-  def self.for(uniqname:, client: AlmaRestClient.client)
-    url = "/users/#{uniqname}/fees"
-    response = client.get_all(url: url, record_key: "fee")
-    raise StandardError if response.code != 200
-    Fines.new(parsed_response: response.parsed_response)
   end
 end
 
