@@ -3,12 +3,12 @@ class Fines
     url = "/users/#{uniqname}/fees"
     response = client.get_all(url: url, record_key: "fee")
     raise StandardError if response.status != 200
-    Fines.new(parsed_response: response.body)
+    Fines.new(body: response.body)
   end
 
-  def initialize(parsed_response:)
-    @parsed_response = parsed_response
-    @list = parsed_response["fee"]&.map { |l| Fine.new(l) } || []
+  def initialize(body:)
+    @body = body
+    @list = @body["fee"]&.map { |l| Fine.new(l) } || []
   end
 
   def self.pay(uniqname:, amount:, order_number:, client: AlmaRestClient.client)
@@ -16,11 +16,11 @@ class Fines
   end
 
   def count
-    @parsed_response["total_record_count"] || 0
+    @body["total_record_count"] || 0
   end
 
   def total_sum
-    @parsed_response["total_sum"] || 0
+    @body["total_sum"] || 0
   end
 
   def total_sum_in_dollars
@@ -64,8 +64,8 @@ class Fines
 end
 
 class Fine
-  def initialize(parsed_response)
-    @parsed_response = parsed_response
+  def initialize(body)
+    @body = body
   end
 
   def self.pay(uniqname:, fine_id:, balance:, client: AlmaRestClient.client)
@@ -74,38 +74,38 @@ class Fine
   end
 
   def id
-    @parsed_response["id"]
+    @body["id"]
   end
 
   def title
-    @parsed_response["title"]
+    @body["title"]
   end
 
   def barcode
-    @parsed_response.dig("barcode", "value")
+    @body.dig("barcode", "value")
   end
 
   def date
-    DateTime.patron_format(@parsed_response["creation_time"])
+    DateTime.patron_format(@body["creation_time"])
   end
 
   def balance
-    @parsed_response["balance"]&.to_currency
+    @body["balance"]&.to_currency
   end
 
   def type
-    @parsed_response["type"]["desc"]
+    @body["type"]["desc"]
   end
 
   def code
-    @parsed_response["type"]["value"]
+    @body["type"]["value"]
   end
 
   def original_amount
-    @parsed_response["original_amount"]&.to_currency
+    @body["original_amount"]&.to_currency
   end
 
   def library
-    @parsed_response["owner"]["desc"]
+    @body["owner"]["desc"]
   end
 end
