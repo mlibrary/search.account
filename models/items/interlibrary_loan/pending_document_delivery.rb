@@ -1,8 +1,8 @@
 class PendingLocalDocumentDelivery < InterlibraryLoanItems
   attr_reader :pagination, :count
-  def initialize(parsed_response:, pagination:, count: nil)
+  def initialize(pagination:, body:, count: nil)
     super
-    @items = parsed_response.map { |item| PendingDocumentDeliveryItem.new(item) }
+    @items = body.map { |item| PendingDocumentDeliveryItem.new(item) }
     @pagination = pagination
     @count = count
   end
@@ -26,7 +26,7 @@ end
 
 class PendingDocumentDeliveryItem < InterlibraryLoanItem
   def status
-    tstatus = @parsed_response["TransactionStatus"]
+    tstatus = @body["TransactionStatus"]
     if ["In Delivery Transit", "Out for Delivery"].include?(tstatus)
       "Being delivered"
     elsif ["Customer Notified via E-Mail"].include?(tstatus)

@@ -27,6 +27,7 @@ require File.expand_path "../../account.rb", __FILE__
 
 module RSpecMixin
   include Rack::Test::Methods
+  include AlmaRestClient::Test::Helpers
 
   def app = Sinatra::Application
 end
@@ -127,36 +128,6 @@ end
     req.to_return(body: output, status: status, headers: {content_type: "application/json"}) if no_return.nil?
     req
   end
-end
-
-[:get, :post, :delete].each do |name|
-  define_method(:"stub_alma_#{name}_request") do |url:, body: "{}", status: 200, query: {}, no_return: nil|
-    req = stub_request(name, "#{ENV["ALMA_API_HOST"]}/almaws/v1/#{url}").with(
-      headers: {
-        :accept => "application/json",
-        :Authorization => "apikey #{ENV["ALMA_API_KEY"]}",
-        "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-        "User-Agent" => "Ruby"
-      },
-      query: query
-    )
-    req.to_return(body: body, status: status, headers: {content_type: "application/json"}) if no_return.nil?
-    req
-  end
-end
-def stub_alma_put_request(url:, input:, output:, status: 200, no_return: nil)
-  req = stub_request(:put, "#{ENV["ALMA_API_HOST"]}/almaws/v1/#{url}").with(
-    body: input,
-    headers: {
-      :accept => "application/json",
-      :Authorization => "apikey #{ENV["ALMA_API_KEY"]}",
-      "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-      "User-Agent" => "Ruby",
-      "Content-Type" => "application/json"
-    }
-  )
-  req.to_return(body: output, status: status, headers: {content_type: "application/json"}) if no_return.nil?
-  req
 end
 
 def stub_illiad_get_request(url:, body: "{}", status: 200, query: nil, no_return: nil)

@@ -1,6 +1,6 @@
 class ILLiadPatron
-  def initialize(parsed_response)
-    @parsed_response = parsed_response
+  def initialize(body)
+    @body = body
   end
 
   def self.for(uniqname:, illiad_client: ILLiadClient.new)
@@ -16,7 +16,7 @@ class ILLiadPatron
   end
 
   def delivery_location
-    [@parsed_response["SAddress"], @parsed_response["SAddress2"]].reject { |x| x.nil? }.join(" / ")
+    [@body["SAddress"], @body["SAddress2"]].reject { |x| x.nil? }.join(" / ")
   end
 end
 

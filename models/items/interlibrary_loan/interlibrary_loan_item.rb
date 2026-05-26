@@ -1,19 +1,19 @@
 class InterlibraryLoanItem < Item
-  def initialize(parsed_response)
+  def initialize(body)
     super
-    if @parsed_response["RequestType"] == "Article"
-      @title = [@parsed_response["PhotoJournalTitle"], @parsed_response["PhotoArticleTitle"]].reject { |e| e.to_s.empty? }.join(": ")
-      @author = [@parsed_response["PhotoArticleAuthor"], @parsed_response["PhotoItemAuthor"]].reject { |e| e.to_s.empty? }.join("; ")
-      @description = (!@parsed_response["PhotoJournalVolume"].nil?) ? "vol #{@parsed_response["PhotoJournalVolume"]}" : ""
+    if @body["RequestType"] == "Article"
+      @title = [@body["PhotoJournalTitle"], @body["PhotoArticleTitle"]].reject { |e| e.to_s.empty? }.join(": ")
+      @author = [@body["PhotoArticleAuthor"], @body["PhotoItemAuthor"]].reject { |e| e.to_s.empty? }.join("; ")
+      @description = (!@body["PhotoJournalVolume"].nil?) ? "vol #{@body["PhotoJournalVolume"]}" : ""
     else
-      @title = @parsed_response["LoanTitle"] || ""
-      @author = @parsed_response["LoanAuthor"] || ""
+      @title = @body["LoanTitle"] || ""
+      @author = @body["LoanAuthor"] || ""
       @description = ""
     end
   end
 
   def illiad_id
-    @parsed_response["TransactionNumber"]
+    @body["TransactionNumber"]
   end
 
   def illiad_url(action, form, type = false)
@@ -41,22 +41,22 @@ class InterlibraryLoanItem < Item
   end
 
   def creation_date
-    @parsed_response["CreationDate"] ? DateTime.patron_format(@parsed_response["CreationDate"]) : ""
+    @body["CreationDate"] ? DateTime.patron_format(@body["CreationDate"]) : ""
   end
 
   def expiration_date
-    @parsed_response["DueDate"] ? DateTime.patron_format(@parsed_response["DueDate"]) : ""
+    @body["DueDate"] ? DateTime.patron_format(@body["DueDate"]) : ""
   end
 
   def due_status
-    @parsed_response["DueDate"] ? DueStatus.new(due_date: @parsed_response["DueDate"]) : OpenStruct.new(any?: false)
+    @body["DueDate"] ? DueStatus.new(due_date: @body["DueDate"]) : OpenStruct.new(any?: false)
   end
 
   def transaction_date
-    @parsed_response["TransactionDate"] ? DateTime.patron_format(@parsed_response["TransactionDate"]) : ""
+    @body["TransactionDate"] ? DateTime.patron_format(@body["TransactionDate"]) : ""
   end
 
   def renewable?
-    @parsed_response["RenewalsAllowed"]
+    @body["RenewalsAllowed"]
   end
 end

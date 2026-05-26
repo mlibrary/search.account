@@ -1,6 +1,6 @@
 class Items
-  def initialize(parsed_response)
-    @parsed_response = parsed_response
+  def initialize(body)
+    @body = body
     @items = []
   end
 
