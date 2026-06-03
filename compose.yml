@@ -1,3 +1,10 @@
+x-condition-healthy: &healthy
+  condition: service_healthy
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 5s
+  timeout: 10s
+  start_period: 10s
+  retries: 5
 services:
   web:
     build:
@@ -12,20 +19,33 @@ services:
     env_file:
       - env.development
       - .env
-  circulation-history:
+  checkout-history:
     image: ghcr.io/mlibrary/checkout-history-unstable:latest
+    depends_on:
+      checkout-history-db: *healthy
     ports:
       - "3000:3000"
     environment:
-      - RAILS_ENV=production
-      - MARIADB_ROOT_PASSWORD=pass
-      - CIRCULATION_HISTORY_DATABASE_PASSWORD=circulation_history_db_password
-      - DATABASE_HOST=circulation-history-db
+      - RAILS_ENV=development
+      - MARIADB_ROOT_PASSWORD=password
+      - DATABASE_HOST=checkout-history-db
       - SECRET_KEY_BASE=secret_key_base
+      - WORKSHOP_AUTH_TOKEN=checkout_history_api_key
+      - RAILS_DEVELOPMENT_HOSTS=checkout-history
     env_file:
       - .env
-  circulation-history-db:
-    image: ghcr.io/mlibrary/circulation_history_dev_db:latest
+  checkout-history-db:
+    image: mariadb
+    volumes:
+      - checkout_history_db:/var/lib/mysql
+    healthcheck:
+      !!merge <<: *healthcheck-defaults
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+    environment:
+      - MARIADB_ROOT_PASSWORD=password
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=password
+      - MARIADB_DATABASE=database
   sass:
     build:
       context: .
@@ -49,4 +69,4 @@ services:
     command: "npm run watch-js"
 volumes:
   gem_cache:
-  circ_history_db:
+  checkout_history_db:
