@@ -15,6 +15,9 @@ else
   cp .github/pre-commit .git/hooks/pre-commit
 fi
 
+echo "🚢 Pull dependent packages"
+docker compose pull
+
 echo "🚢 Build docker images"
 docker compose build
 
@@ -26,3 +29,7 @@ docker compose run --rm web npm install
 
 echo "📦 Building js and css"
 docker compose run --rm web npm run build
+
+echo "🗄️ Set up Checkout History DB or run migrations"
+docker compose run --rm checkout-history bundle exec bin/rails db:prepare
+
