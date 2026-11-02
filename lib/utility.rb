@@ -11,15 +11,16 @@ end
 
 class Time
   def self.patron_format(date)
-    Time.zone.parse(date).strftime("%D") unless date.nil?
+    S.time_zone.parse(date).strftime("%D") unless date.nil?
   end
 end
 
 class DueStatus
   def initialize(due_date:, last_renew_date: nil)
-    @due_date = Date.parse(due_date)
+    @due_date = S.time_zone.parse(due_date).to_date
     @last_renew_date = last_renew_date
-    @last_renew_date = Date.parse(last_renew_date) unless @last_renew_date.nil?
+    @last_renew_date = S.time_zone.parse(last_renew_date).to_date unless @last_renew_date.nil?
+    @today = S.time_zone.now.to_date
   end
 
   # Using the due date and last renew date if it exists, return the appropriate
@@ -28,11 +29,11 @@ class DueStatus
   #
   # @return [String] display string based on the due date and last renew date
   def to_s
-    due_diff = (@due_date - Date.today).to_i
+    due_diff = (@due_date - @today).to_i
 
     renew_diff = -1
 
-    renew_diff = (Date.today - @last_renew_date).to_i unless @last_renew_date.nil?
+    renew_diff = (@today - @last_renew_date).to_i unless @last_renew_date.nil?
 
     if due_diff < 0
       "Overdue"
@@ -55,6 +56,8 @@ class DueStatus
     case to_s
     when "Overdue"
       "tag--fail"
+    when "Due Today"
+      "tag--warning"
     when "Due Soon"
       "tag--warning"
     when "Renewed"

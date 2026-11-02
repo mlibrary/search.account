@@ -68,7 +68,6 @@ require_relative "lib/routes/settings"
 require_relative "lib/routes/fines_and_fees"
 require_relative "lib/routes/accessibility"
 
-Time.zone = "Eastern Time (US & Canada)"
 helpers StyledFlash
 
 enable :sessions
