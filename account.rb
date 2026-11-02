@@ -103,7 +103,7 @@ post "/table-controls" do
   url_generator = TableControls::URLGenerator.for(show: params["show"], sort: params["sort"], referrer: request.referrer)
   redirect url_generator.to_s
 end
-# :nocov:
+# simplecov:disable
 if dev_login?
   get "/session_switcher" do
     patron = Patron.for(uniqname: params[:uniqname])
@@ -111,7 +111,7 @@ if dev_login?
     redirect back
   end
 end
-# :nocov:
+# simplecov:enable
 
 get "/" do
   erb :"account-overview/index", locals: {cards: Navigation.cards}
