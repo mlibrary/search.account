@@ -164,15 +164,15 @@ describe Loan do
   end
   context "#due_status" do
     it "returns 'Overdue'" do
-      @loan_response["due_date"] = (Date.today - 1).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now - 1.day).strftime("%FT%H:%M:%SZ")
       expect(subject.due_status.to_s).to eq("Overdue")
     end
     it "returns 'Due Today' for today" do
-      @loan_response["due_date"] = Date.today.strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = S.time_zone.now.strftime("%FT%H:%M:%SZ")
       expect(subject.due_status.to_s).to eq("Due Today")
     end
     it "returns 'Due Soon' for 7 days" do
-      @loan_response["due_date"] = (Date.today + 7).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now + 7.days).strftime("%FT%H:%M:%SZ")
       expect(subject.due_status.to_s).to eq("Due Soon")
     end
     it "returns reported as returned for claims returned" do
@@ -180,21 +180,21 @@ describe Loan do
       expect(subject.due_status.to_s).to eq("Reported as returned")
     end
     it "returns 'Renewed' when due date is more than 7 days in the future and last renew was yesterday" do
-      @loan_response["due_date"] = (Date.today + 8).strftime("%FT%H:%M:%SZ")
-      @loan_response["last_renew_date"] = (Date.today - 1).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now + 8.days).strftime("%FT%H:%M:%SZ")
+      @loan_response["last_renew_date"] = (S.time_zone.now - 1.day).strftime("%FT%H:%M:%SZ")
       expect(subject.due_status.to_s).to eq("Renewed")
     end
     it "returns 'Renewed' when due date is more than 7 days in the future and last renew was 14 days" do
-      @loan_response["due_date"] = (Date.today + 8).strftime("%FT%H:%M:%SZ")
-      @loan_response["last_renew_date"] = (Date.today - 14).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now + 8.days).strftime("%FT%H:%M:%SZ")
+      @loan_response["last_renew_date"] = (S.time_zone.now - 14.days).strftime("%FT%H:%M:%SZ")
     end
     it "returns an empty string when due date is more than 7 days in the future and the last renew was over 14 days ago" do
-      @loan_response["due_date"] = (Date.today + 8).strftime("%FT%H:%M:%SZ")
-      @loan_response["last_renew_date"] = (Date.today - 15).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now + 8.days).strftime("%FT%H:%M:%SZ")
+      @loan_response["last_renew_date"] = (S.time_zone.now - 15.days).strftime("%FT%H:%M:%SZ")
       expect(subject.due_status.to_s).to eq("")
     end
     it "returns an empty string when due date is more than 7 days in the future and the last renewed date is nill" do
-      @loan_response["due_date"] = (Date.today + 8).strftime("%FT%H:%M:%SZ")
+      @loan_response["due_date"] = (S.time_zone.now + 8.days).strftime("%FT%H:%M:%SZ")
       @loan_response["last_renew_date"] = nil
       expect(subject.due_status.to_s).to eq("")
     end

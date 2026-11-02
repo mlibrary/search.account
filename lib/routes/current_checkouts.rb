@@ -14,6 +14,7 @@ namespace "/current-checkouts" do
     message = session.delete(:message)
     erb :"current-checkouts/u-m-library", locals: {loans: loans, message: message, loan_controls: loan_controls}
   rescue => e
+    S.logger.error(e)
     flash.now[:error] = "<span class='strong'>Error:</span> We were unable to load your loans. Please try again." unless e.message == "not_in_alma"
     erb :empty_state
   end

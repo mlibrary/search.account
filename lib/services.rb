@@ -29,6 +29,11 @@ S.register(:app_env) do
   ENV["APP_ENV"] || "development"
 end
 
+S.register(:time_zone) do
+  Time.zone = "Eastern Time (US & Canada)"
+  Time.zone
+end
+
 class ProductionFormatter < SemanticLogger::Formatters::Json
   # Leave out the pid
   def pid
