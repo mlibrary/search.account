@@ -40,7 +40,7 @@ class Loan < AlmaItem
   end
 
   def due_date
-    DateTime.patron_format(@body["due_date"]) unless claims_returned?
+    Time.patron_format(@body["due_date"]) unless claims_returned?
   end
 
   def loan_id

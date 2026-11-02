@@ -13,6 +13,7 @@ gem "redcarpet"
 gem "rackup"
 gem "canister"
 gem "semantic_logger"
+gem "activesupport"
 gem "csv" # included here because httparty uses it and ought to require it
 gem "ostruct"
 

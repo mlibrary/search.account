@@ -28,7 +28,7 @@ class Request < AlmaItem
   end
 
   def expiry_date
-    @body["expiry_date"] ? DateTime.patron_format(@body["expiry_date"]) : ""
+    @body["expiry_date"] ? Time.patron_format(@body["expiry_date"]) : ""
   end
 
   def publication_date
@@ -44,7 +44,7 @@ class Request < AlmaItem
   end
 
   def request_date
-    DateTime.patron_format(@body["request_time"])
+    Time.patron_format(@body["request_time"])
   end
 
   def status
@@ -76,7 +76,7 @@ end
 
 class BookingRequest < Request
   def booking_date
-    DateTime.patron_format(@body["booking_start_date"])
+    Time.patron_format(@body["booking_start_date"])
   end
 
   def self.empty_state_text

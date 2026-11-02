@@ -54,9 +54,9 @@ describe InterlibraryLoanItem do
       @item["DueDate"] = (Date.today - 1).strftime(format)
       expect(subject.due_status.to_s).to eq("Overdue")
     end
-    it "returns 'Due Soon' for today" do
+    it "returns 'Due Today' for today" do
       @item["DueDate"] = Date.today.strftime(format)
-      expect(subject.due_status.to_s).to eq("Due Soon")
+      expect(subject.due_status.to_s).to eq("Due Today")
     end
     it "returns 'Due Soon' for 7 days" do
       @item["DueDate"] = (Date.today + 7).strftime(format)

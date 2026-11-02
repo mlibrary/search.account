@@ -7,6 +7,7 @@ require "jwt"
 require "ostruct"
 require "active_support"
 require "active_support/core_ext/numeric"
+require "active_support/core_ext/time/zones"
 
 require "debug" if development?
 
@@ -67,6 +68,7 @@ require_relative "lib/routes/settings"
 require_relative "lib/routes/fines_and_fees"
 require_relative "lib/routes/accessibility"
 
+Time.zone = "Eastern Time (US & Canada)"
 helpers StyledFlash
 
 enable :sessions
