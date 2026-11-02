@@ -86,7 +86,7 @@ class Fine
   end
 
   def date
-    DateTime.patron_format(@body["creation_time"])
+    Time.patron_format(@body["creation_time"])
   end
 
   def balance

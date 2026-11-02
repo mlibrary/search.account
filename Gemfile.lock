@@ -233,6 +233,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activesupport
   addressable
   alma_rest_client!
   canister

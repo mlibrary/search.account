@@ -54,11 +54,11 @@ class CirculationHistoryItem < Item
   end
 
   def checkout_date
-    DateTime.patron_format(@body["checkout_date"])
+    Time.patron_format(@body["checkout_date"])
   end
 
   def return_date
-    DateTime.patron_format(@body["return_date"])
+    Time.patron_format(@body["return_date"])
   end
 
   def mms_id

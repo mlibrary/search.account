@@ -4,12 +4,14 @@ require "securerandom"
 
 # App-wide formatting
 class DateTime
-  def self.patron_format(date)
-    DateTime.parse(date).strftime("%D") unless date.nil?
-  end
-
   def self.timestamp
     DateTime.now.strftime("%Q")
+  end
+end
+
+class Time
+  def self.patron_format(date)
+    Time.zone.parse(date).strftime("%D") unless date.nil?
   end
 end
 
@@ -34,6 +36,8 @@ class DueStatus
 
     if due_diff < 0
       "Overdue"
+    elsif due_diff == 0
+      "Due Today"
     elsif due_diff <= 7
       "Due Soon"
     elsif renew_diff.between?(0, 14)

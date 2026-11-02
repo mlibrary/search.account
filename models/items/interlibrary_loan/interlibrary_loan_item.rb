@@ -41,11 +41,11 @@ class InterlibraryLoanItem < Item
   end
 
   def creation_date
-    @body["CreationDate"] ? DateTime.patron_format(@body["CreationDate"]) : ""
+    @body["CreationDate"] ? Time.patron_format(@body["CreationDate"]) : ""
   end
 
   def expiration_date
-    @body["DueDate"] ? DateTime.patron_format(@body["DueDate"]) : ""
+    @body["DueDate"] ? Time.patron_format(@body["DueDate"]) : ""
   end
 
   def due_status
@@ -53,7 +53,7 @@ class InterlibraryLoanItem < Item
   end
 
   def transaction_date
-    @body["TransactionDate"] ? DateTime.patron_format(@body["TransactionDate"]) : ""
+    @body["TransactionDate"] ? Time.patron_format(@body["TransactionDate"]) : ""
   end
 
   def renewable?
