@@ -1,4 +1,4 @@
-FROM ruby:4.0 AS development
+FROM ruby:4.0.10@sha256:84e854507d7f2ffc9061e32d47c16d7413bcb1fa55ec29c1927f9e4d62fa6cf3 AS development
 
 ARG UNAME=app
 ARG UID=1000
@@ -26,7 +26,7 @@ RUN mkdir -p /gems && chown ${UID}:${GID} /gems
 
 USER $UNAME
 
-ENV BUNDLE_PATH /gems
+ENV BUNDLE_PATH=/gems
 
 WORKDIR /app
 
@@ -34,7 +34,7 @@ CMD ["bundle", "exec", "rackup", "-p", "4567", "--host", "0.0.0.0"]
 
 FROM development AS production
 
-ENV BUNDLE_WITHOUT development:test
+ENV BUNDLE_WITHOUT=development:test
 
 COPY --chown=${UID}:${GID} . /app
 
